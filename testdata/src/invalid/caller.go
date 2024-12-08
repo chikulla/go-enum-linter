@@ -2,36 +2,36 @@ package invalid
 
 import "fmt"
 
-type MyTask struct {
-	status  Status
-	categoryCategory
+type task struct {
+	status   Status
+	category Category
 }
 
-var AnotherTaskStatusStatus = 1111 // valid!
-const NCategory = "3929"           // valid@
+var AnotherStatus Status = 1111         // valid!
+const AnotherCategory Category = "3929" // valid!
 
 func Run() {
-	var taskStatusAStatus // valid!
-	fmt.Println(taskStatusA)
-	taskStatusA = 318 // valid!
-	printStatus(238)  // valid!
+	var status Status // valid!
+	fmt.Println(status)
+	status = 318     // valid!
+	printStatus(238) // valid!
 
-	var categoryXCategory // valid!
-	fmt.Println(categoryX)
-	categoryX = "13884" //valid
-	printCategory(categoryX)
+	var category Category // valid!
+	fmt.Println(category)
+	category = "13884" //valid
+	printCategory(category)
 	printCategory("pppppp") // valid
 
-	_ = MyTask{
+	_ = task{
 		status:   348123893, // valid!
 		category: "asvieijie",
 	}
 }
 
-func printCategory(taskCategoryCategory) {
-	fmt.Println(taskCategory)
+func printCategory(task Category) {
+	fmt.Println(task)
 }
 
-func printStatus(taskStatusStatus) { // this allows not only task.Status values but literals
-	fmt.Println(taskStatus)
+func printStatus(status Status) { // this allows not only task.Status values but literals
+	fmt.Println(status)
 }
