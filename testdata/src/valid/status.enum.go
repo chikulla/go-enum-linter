@@ -1,4 +1,4 @@
-package task
+package valid
 
 type Status int
 

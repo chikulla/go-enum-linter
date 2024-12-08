@@ -26,7 +26,8 @@ type MyTask struct {
 const AnotherTaskStatus task.Status = 1111 // Arbitrary values allowed
 func main() {
     var taskStatusA task.Status  // Zero-value initialization
-    taskStatusA = 238            // Direct literal values assignment allowed
+    taskStatusB := 238             
+    printStatus(taskStatusB)
     printStatus(238)             // Literal values accepted as parameters
     _ = MyTask{
         status: 348123893,       // Any literal value accepted in structs

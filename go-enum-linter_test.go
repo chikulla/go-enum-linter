@@ -7,7 +7,7 @@ import (
 )
 
 func TestEnumRestrictionAnalyzer(t *testing.T) {
-	testdata := analysistest.TestData() // "testdata" ディレクトリを指す
+	testdata := analysistest.TestData() // points "testdata" dir
 
 	analysistest.Run(t, testdata, EnumRestrictionAnalyzer, "valid", "invalid")
 }
