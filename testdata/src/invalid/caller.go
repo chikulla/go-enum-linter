@@ -7,24 +7,24 @@ type task struct {
 	category Category
 }
 
-var AnotherStatus Status = 1111         // valid!
-const AnotherCategory Category = "3929" // valid!
+var AnotherStatus Status = 1111         // OK (Status not defined at *.enum.go)
+const AnotherCategory Category = "3929" // OK (Category not defined at *.enum.go)
 
 func Run() {
-	var status Status // valid!
+	var status Status // OK
 	fmt.Println(status)
-	status = 318     // valid!
-	printStatus(238) // valid!
+	status = 318     // OK
+	printStatus(238) // OK
 
-	var category Category // valid!
+	var category Category // OK
 	fmt.Println(category)
-	category = "13884" //valid
+	category = "13884" // OK
 	printCategory(category)
-	printCategory("pppppp") // valid
+	printCategory("pppppp") // OK
 
 	_ = task{
-		status:   348123893, // valid!
-		category: "asvieijie",
+		status:   348123893,   // OK
+		category: "asvieijie", // OK
 	}
 }
 
@@ -32,6 +32,6 @@ func printCategory(task Category) {
 	fmt.Println(task)
 }
 
-func printStatus(status Status) { // this allows not only task.Status values but literals
+func printStatus(status Status) {
 	fmt.Println(status)
 }

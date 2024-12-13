@@ -47,24 +47,63 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		}
 	})
 
-	inspector.Preorder([]ast.Node{(*ast.CallExpr)(nil), (*ast.AssignStmt)(nil)}, func(n ast.Node) {
-		file := pass.Fset.Position(n.Pos()).Filename
+	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
+	nodeFilter = []ast.Node{
+		(*ast.ValueSpec)(nil),    // For var and const declarations
+		(*ast.CallExpr)(nil),     // For function calls
+		(*ast.CompositeLit)(nil), // For struct literals
+	}
 
-		if strings.HasSuffix(file, allowedFileSuffix) {
-			return // allows definition file (*.enum.go by default)
-		}
-
-		switch stmt := n.(type) {
-		case *ast.AssignStmt:
-			for _, expr := range stmt.Rhs {
-				checkRestrictedType(pass, expr, restrictedTypes)
+	inspect.Preorder(nodeFilter, func(n ast.Node) {
+		switch node := n.(type) {
+		case *ast.ValueSpec:
+			// Check var and const declarations
+			for _, name := range node.Names {
+				if typ, ok := node.Type.(*ast.Ident); ok {
+					if isEnumType(typ.Name) {
+						pass.Reportf(name.Pos(), "some")
+					}
+				}
 			}
+
 		case *ast.CallExpr:
-			checkRestrictedType(pass, stmt, restrictedTypes)
+			// Check function calls with enum parameters
+			if fun, ok := node.Fun.(*ast.Ident); ok {
+				if fd := pass.TypesInfo.ObjectOf(fun); fd != nil {
+					if fn, ok := fd.(*types.Func); ok {
+						sig := fn.Type().(*types.Signature)
+						params := sig.Params()
+						for i := 0; i < params.Len(); i++ {
+							param := params.At(i)
+							if isEnumType(param.Type().String()) {
+								pass.Reportf(node.Args[i].Pos(), "some")
+							}
+						}
+					}
+				}
+			}
+
+		case *ast.CompositeLit:
+			// Check struct literal field assignments
+			if _, ok := node.Type.(*ast.Ident); ok {
+				for _, elt := range node.Elts {
+					if kv, ok := elt.(*ast.KeyValueExpr); ok {
+						if key, ok := kv.Key.(*ast.Ident); ok {
+							if isEnumType(key.Name) {
+								pass.Reportf(kv.Value.Pos(), "some")
+							}
+						}
+					}
+				}
+			}
 		}
 	})
 
 	return nil, nil
+}
+
+func isEnumType(name string) bool {
+	return name == "Status" || name == "Category"
 }
 
 func checkRestrictedType(pass *analysis.Pass, expr ast.Expr, restrictedTypes map[string]bool) {

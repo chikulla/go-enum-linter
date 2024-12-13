@@ -3,6 +3,6 @@ package valid
 type Category = string
 
 const (
-	CategoryA Category = "A"
-	CategoryB Category = "B"
+	CategoryA Category = "A" // OK
+	CategoryB Category = "B" // OK
 )

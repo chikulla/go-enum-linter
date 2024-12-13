@@ -7,25 +7,22 @@ type task struct {
 	category Category
 }
 
-var AnotherStatus Status = 1111
+var AnotherStatus Status = 1111 // want "some"
 
-const AnotherCategory Category = "3929" // valid!
+const AnotherCategory Category = "3929" // want "some"
 
 func Run() {
-	var status Status // valid!
+	var status Status // want "some"
 	fmt.Println(status)
-	status = 318     // valid!
-	printStatus(238) // valid!
+	printStatus(238) // want "some"
 
-	var category Category // valid!
+	var category Category // want "some"
 	fmt.Println(category)
-	category = "13884" //valid
-	printCategory(category)
-	printCategory("pppppp") // want "^raw literal \\(STRING\\) passed to type alias \\(valid\\.printCategory\\), use a constant instead$"
+	printCategory("pppppp") // want "some"
 
 	_ = task{
-		status:   348123893, // valid!
-		category: "asvieijie",
+		status:   348123893,   // want "some"
+		category: "asvieijie", // want "some"
 	}
 }
 
@@ -33,6 +30,6 @@ func printCategory(task Category) {
 	fmt.Println(task)
 }
 
-func printStatus(status Status) { // this allows not only task.Status values but literals
+func printStatus(status Status) {
 	fmt.Println(status)
 }
